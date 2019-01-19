@@ -16,6 +16,7 @@ interface Props {
 }
 
 export default class CameraScreen extends PureComponent<Props, State> {
+  mounted: boolean = false
   camera: null | Camera = null
   state = {
     hasCameraPermission: null,
@@ -54,9 +55,22 @@ export default class CameraScreen extends PureComponent<Props, State> {
     }
   }
 
-  async componentDidMount() {
+  hasPermission = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
+    return status === "granted"
+  }
+
+  async componentDidMount() {
+    const hasCameraPermission = await this.hasPermission()
+    this.setState({ hasCameraPermission });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false
+  }
+
+  componentWillMount() {
+    this.mounted = true
   }
 
   render() {
@@ -67,6 +81,8 @@ export default class CameraScreen extends PureComponent<Props, State> {
     if (hasCameraPermission === null) {
       return <View />
     } else if (hasCameraPermission === false) {
+      return <View />
+    } else if (this.mounted === false) {
       return <View />
     } else {
       return (
