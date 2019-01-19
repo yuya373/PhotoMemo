@@ -47,7 +47,16 @@ export default class CameraScreen extends PureComponent<Props, State> {
             this.setState({ pictureTaking: false })
             console.log("uri", uri)
           }).catch((err) => {
-            this.setState({ pictureTaking: false })
+            this.setState(
+              (s) => ({
+                ...s,
+                pictureTaking: false,
+                hasCameraPermission: false,
+              }),
+              async () => {
+                const hasCameraPermission = await this.hasPermission()
+                this.setState({ hasCameraPermission })
+              })
             console.error(err)
           })
         }
