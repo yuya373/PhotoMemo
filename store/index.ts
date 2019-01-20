@@ -37,7 +37,7 @@ export default class Store extends Container<State> {
   addMemo = async (memo: Memo): Promise<void> => {
     await this.setState((s) => ({
       ...s,
-      memos: s.memos.concat([memo]),
+      memos: [memo].concat(s.memos),
     }))
     return this.storeState()
   }
