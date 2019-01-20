@@ -1,6 +1,8 @@
 import React from "react"
 import { NavigationScreenProp } from "react-navigation";
 import {
+  Form,
+  Label,
   Text,
   Input,
   Item,
@@ -72,6 +74,26 @@ export default class CreateTagModal extends React.Component<Props, State> {
     }))
   }
 
+  renderForm = (store: Store) => {
+    return (
+      <Form>
+        <Item
+          floatingLabel
+          last
+        >
+          <Label>
+            Name
+          </Label>
+          <Input
+            autoFocus
+            onChangeText={this.handleChangeText}
+            returnKeyType="done"
+            onSubmitEditing={() => this.createTag(store)}
+          />
+        </Item>
+      </Form>
+    )
+  }
   render() {
     const level = this.props.navigation.getParam("level", "0")
     const title = level === "0" ?
@@ -103,12 +125,9 @@ export default class CreateTagModal extends React.Component<Props, State> {
           </Right>
         </Header>
         <Content>
-          <Item regular>
-            <Input
-              placeholder="Tag name here..."
-              onChangeText={this.handleChangeText}
-            />
-          </Item>
+          <Subscribe to={[Store]}>
+            {this.renderForm}
+          </Subscribe>
         </Content>
       </Container>
     )
