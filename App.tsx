@@ -2,6 +2,9 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
+import { Provider } from "unstated"
+import { AsyncStorage } from "react-native"
+import Store from "./store"
 
 interface State {
   isLoadingComplete: boolean,
@@ -12,6 +15,7 @@ interface Props {
 }
 
 export default class App extends React.Component<Props, State> {
+  storeInstance: Store | undefined = undefined
   state = {
     isLoadingComplete: false,
   };
@@ -27,16 +31,19 @@ export default class App extends React.Component<Props, State> {
       );
     } else {
       return (
-        <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
-        </View>
+        <Provider inject={[this.storeInstance!]}>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            <AppNavigator />
+          </View>
+        </Provider>
       );
     }
   }
 
   _loadResourcesAsync = async () => {
     return Promise.all([
+      AsyncStorage.getItem("state"),
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
         require('./assets/images/robot-prod.png'),
@@ -50,7 +57,11 @@ export default class App extends React.Component<Props, State> {
         'Roboto': require('native-base/Fonts/Roboto.ttf'),
         'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
       }),
-    ]).then(() => { });
+    ]).then(([state, ..._]) => {
+      this.storeInstance = new Store(
+        state ? JSON.parse(state) : undefined
+      )
+    });
   };
 
   _handleLoadingError = (error: Error) => {

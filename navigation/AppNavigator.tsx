@@ -1,13 +1,20 @@
-import React from 'react';
-import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
+import {
+  createAppContainer,
+  createSwitchNavigator,
+  createStackNavigator,
+} from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 import CameraScreen from "./../screens/CameraScreen"
+import CreateMemoScreen from "./../screens/CreateMemoScreen"
+import CreateTagScreen from "./../screens/CreateTagScreen"
 
 const MainStack = createStackNavigator(
   {
     Main: MainTabNavigator,
     Camera: CameraScreen,
+    CreateMemo: CreateMemoScreen,
+    CreateTag: CreateTagScreen,
   },
   {
     mode: "modal",
