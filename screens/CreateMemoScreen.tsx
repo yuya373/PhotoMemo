@@ -243,6 +243,56 @@ export default class CreateMemoScreen extends React.Component<Props, State> {
     }
   }
 
+  isSaveButtonDisabled = () => {
+    const {
+      category,
+      subCategory,
+      tags,
+    } = this.state
+
+    return category == null ||
+      subCategory == null ||
+      tags.length <= 0
+  }
+
+  saveImage = async (store: Store) => {
+    if (this.isSaveButtonDisabled()) return
+
+    const {
+      category,
+      subCategory,
+      tags,
+    } = this.state
+    const {
+      navigation,
+    } = this.props
+
+    const uri = navigation.getParam("uri", null)
+
+    if (!uri) return
+
+    await store.addMemo({
+      uri: uri,
+      category: category!.label,
+      subCategory: subCategory!.label,
+      tags: tags.map((e) => e.label),
+    })
+    navigation.navigate("Home")
+  }
+
+  renderSaveButton = (store: Store) => {
+    return (
+      <Button
+        transparent
+        disabled={this.isSaveButtonDisabled()}
+        onPress={() => this.saveImage(store)}
+      >
+        <Text>Save</Text>
+      </Button>
+
+    )
+  }
+
   render() {
     const {
       navigation,
@@ -275,9 +325,9 @@ export default class CreateMemoScreen extends React.Component<Props, State> {
             </Title>
           </Body>
           <Right>
-            <Button transparent>
-              <Text>Save</Text>
-            </Button>
+            <Subscribe to={[Store]}>
+              {this.renderSaveButton}
+            </Subscribe>
           </Right>
         </Header>
         <Content>

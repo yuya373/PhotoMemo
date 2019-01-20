@@ -1,17 +1,17 @@
 import { Container } from 'unstated';
-import { Image } from "./../models/Image"
+import { Memo } from "./../models/Memo"
 import { Tag, Tags, addTag } from "./../models/Tag"
 import { AsyncStorage } from "react-native"
 
 export interface State {
-  images: Array<Image>,
+  memos: Array<Memo>,
   tags: Tags,
 }
 export default class Store extends Container<State> {
   constructor(initialState: any = {}) {
     super()
     this.state = {
-      images: initialState.images || [],
+      memos: initialState.memos || [],
       tags: initialState.tags || {
         "0": [],
         "1": [],
@@ -34,11 +34,12 @@ export default class Store extends Container<State> {
     return this.storeState()
   }
 
-  addImage = (image: Image) => {
-    this.setState((s) => ({
+  addMemo = async (memo: Memo): Promise<void> => {
+    await this.setState((s) => ({
       ...s,
-      images: s.images.concat([image]),
+      memos: s.memos.concat([memo]),
     }))
+    return this.storeState()
   }
 
 }
