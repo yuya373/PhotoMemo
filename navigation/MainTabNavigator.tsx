@@ -6,6 +6,9 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import BrowseScreen from "../screens/BrowseScreen"
+import SubCategoryScreen from "../screens/SubCategoryScreen"
+import MemosScreen from "../screens/MemosScreen"
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -53,8 +56,25 @@ SettingsStack.navigationOptions = {
   ),
 };
 
+const BrowseStack = createStackNavigator({
+  Browse: BrowseScreen,
+  SubCategory: SubCategoryScreen,
+  Memos: MemosScreen,
+})
+
+BrowseStack.navigationOptions = {
+  tabBarLabel: "Browse",
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name="browsers"
+    />
+  )
+}
+
 export default createBottomTabNavigator({
   HomeStack,
+  BrowseStack,
   LinksStack,
   SettingsStack,
 });
