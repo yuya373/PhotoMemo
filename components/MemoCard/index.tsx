@@ -11,11 +11,13 @@ import { Memo } from '../../models/Memo';
 interface Props {
   memo: Memo,
   onPressEdit?: () => void,
+  onPressImage?: () => void,
 }
 
 export default function StaticMemoCard({
   memo,
   onPressEdit,
+  onPressImage,
 }: Props) {
 
   const Category = (
@@ -57,6 +59,7 @@ export default function StaticMemoCard({
       SubCategory={SubCategory}
       Tags={Tags}
       onPressEdit={onPressEdit}
+      onPressImage={onPressImage}
     />
   )
 }

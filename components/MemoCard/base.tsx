@@ -14,6 +14,7 @@ interface Props {
   SubCategory: ReactNode,
   Tags: ReactNode,
   onPressEdit?: () => void,
+  onPressImage?: () => void,
 }
 
 export default function MemoCard({
@@ -22,6 +23,7 @@ export default function MemoCard({
   SubCategory,
   Tags,
   onPressEdit,
+  onPressImage,
 }: Props) {
 
   const editButton = onPressEdit ? (
@@ -52,6 +54,8 @@ export default function MemoCard({
         {editButton}
       </CardItem>
       <CardItem
+        button={(typeof onPressImage) === "function"}
+        onPress={onPressImage}
         cardBody
       >
         <Image

@@ -3,6 +3,8 @@ import uuid from "uuid/v4"
 
 export interface NewMemo {
   uri: string,
+  width: number,
+  height: number,
   category: Label,
   subCategory: Label,
   tags: Array<Label>,
