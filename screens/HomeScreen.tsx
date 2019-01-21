@@ -30,11 +30,14 @@ export default class HomeScreen extends React.Component<Props, State> {
     displayCamera: false,
   }
 
+  goEditMemo = (memo: Memo) => () =>
+    this.props.navigation.navigate("EditMemo", { id: memo.id })
+
   renderMemo = ({ item }: { item: Memo }) => {
     return (
       <MemoCard
-        key={item.uri}
         memo={item}
+        onPressEdit={this.goEditMemo(item)}
       />
     )
   }

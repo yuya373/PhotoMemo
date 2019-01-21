@@ -16,6 +16,7 @@ import { Item as PickerItem } from "./../components/Picker"
 import { Subscribe } from 'unstated';
 import Store from "./../store"
 import MemoForm from "./../components/MemoForm"
+import { isValid } from "./../models/Memo"
 
 interface Props {
   navigation: NavigationScreenProp<any, any>,
@@ -129,7 +130,7 @@ export default class CreateMemoScreen extends React.Component<Props, State> {
 
     if (!uri) return
 
-    await store.addMemo({
+    await store.createMemo({
       uri: uri,
       category: category!.label,
       subCategory: subCategory!.label,

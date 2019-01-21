@@ -1,5 +1,5 @@
 import { Container } from 'unstated';
-import { Memo } from "./../models/Memo"
+import { Memo, create as createMemo, NewMemo } from "./../models/Memo"
 import { Tag, Tags, addTag } from "./../models/Tag"
 import { AsyncStorage } from "react-native"
 import STORE_KEY from "./key"
@@ -35,12 +35,48 @@ export default class Store extends Container<State> {
     return this.storeState()
   }
 
-  addMemo = async (memo: Memo): Promise<void> => {
+  createMemo = async (memo: NewMemo): Promise<void> => {
     await this.setState((s) => ({
       ...s,
-      memos: [memo].concat(s.memos),
+      memos: [createMemo(memo)].concat(s.memos),
     }))
     return this.storeState()
   }
 
+  updateMemo = async (memo: Memo): Promise<void> => {
+    await this.setState((s) => ({
+      ...s,
+      memos: [memo].concat(
+        s.memos.filter((e) => e.id !== memo.id)
+      ),
+    }))
+    return this.storeState()
+  }
+
+  findMemo = (id: string | null | undefined): Memo | undefined => {
+    return this.state.memos.find((e) => e.id === id)
+  }
+
+  findCategory = (label: string): Tag | undefined => {
+    return this.state.tags["0"].find((e) => e.label === label)
+  }
+
+  findSubCategory = (label: string): Tag | undefined => {
+    return this.state.tags["1"].find((e) => e.label === label)
+  }
+
+  findTags = (labels: Array<string>): Array<Tag> => {
+    const tags: Array<Tag> = []
+
+    labels.forEach((label) => {
+      const tag = this.state.tags["2"].
+        find((e) => e.label === label)
+
+      if (tag) {
+        tags.push(tag)
+      }
+    })
+
+    return tags
+  }
 }

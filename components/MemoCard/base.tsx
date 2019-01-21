@@ -3,14 +3,17 @@ import {
   Text,
   Card,
   CardItem,
+  Icon,
+  Button,
 } from 'native-base';
-import { Image, StyleSheet } from "react-native"
+import { Image, StyleSheet, View } from "react-native"
 
 interface Props {
   uri: string,
   Category: ReactNode,
   SubCategory: ReactNode,
   Tags: ReactNode,
+  onPressEdit?: () => void,
 }
 
 export default function MemoCard({
@@ -18,7 +21,20 @@ export default function MemoCard({
   Category,
   SubCategory,
   Tags,
+  onPressEdit,
 }: Props) {
+
+  const editButton = onPressEdit ? (
+    <View style={styles.editButtonContainer}>
+      <Button
+        transparent
+        small
+        onPress={onPressEdit}
+      >
+        <Icon name="create" />
+      </Button>
+    </View>
+  ) : null
 
   return (
     <Card style={styles.card}>
@@ -26,13 +42,18 @@ export default function MemoCard({
         header
         style={styles.headerContainer}
       >
-        {Category}
-        <Text style={styles.separator}>
-          >
-        </Text>
-        {SubCategory}
+        <View style={styles.headerText}>
+          {Category}
+          <Text style={styles.separator}>
+            >
+          </Text>
+          {SubCategory}
+        </View>
+        {editButton}
       </CardItem>
-      <CardItem cardBody>
+      <CardItem
+        cardBody
+      >
         <Image
           source={{ uri }}
           style={styles.image}
@@ -52,7 +73,23 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingRight: 0,
+  },
+  headerText: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
     justifyContent: "flex-start",
+  },
+  editButtonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    paddingBottom: 5,
   },
   separator: {
     marginLeft: 10,

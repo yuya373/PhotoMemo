@@ -8,6 +8,7 @@ import MainTabNavigator from './MainTabNavigator';
 import CameraScreen from "./../screens/CameraScreen"
 import CreateMemoScreen from "./../screens/CreateMemoScreen"
 import CreateTagScreen from "./../screens/CreateTagScreen"
+import EditMemoScreen from "./../screens/EditMemoScreen"
 
 const MainStack = createStackNavigator(
   {
@@ -15,6 +16,7 @@ const MainStack = createStackNavigator(
     Camera: CameraScreen,
     CreateMemo: CreateMemoScreen,
     CreateTag: CreateTagScreen,
+    EditMemo: EditMemoScreen,
   },
   {
     mode: "modal",
