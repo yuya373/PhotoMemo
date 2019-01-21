@@ -5,6 +5,7 @@ import AppNavigator from './navigation/AppNavigator';
 import { Provider } from "unstated"
 import { AsyncStorage } from "react-native"
 import Store from "./store"
+import { Root } from "native-base"
 
 interface State {
   isLoadingComplete: boolean,
@@ -31,12 +32,14 @@ export default class App extends React.Component<Props, State> {
       );
     } else {
       return (
-        <Provider inject={[this.storeInstance!]}>
-          <View style={styles.container}>
-            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-            <AppNavigator />
-          </View>
-        </Provider>
+        <Root>
+          <Provider inject={[this.storeInstance!]}>
+            <View style={styles.container}>
+              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+              <AppNavigator />
+            </View>
+          </Provider>
+        </Root>
       );
     }
   }

@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Permissions, ImagePicker } from "expo"
-import { View, Platform } from "react-native"
+import { View, Platform, Alert } from "react-native"
 import { NavigationScreenProp } from 'react-navigation';
 import { NavigationEvents } from 'react-navigation';
+import { ActionSheet } from 'native-base';
 
 interface State {
   hasCameraPermission: null | boolean
@@ -25,16 +26,34 @@ export default class CameraScreen extends PureComponent<Props, State> {
     }
   }
 
-  hasPermission = async () => {
+  askPermission = async (perm: Permissions.CAMERA | Permissions.CAMERA_ROLL): Promise<boolean> => {
     if (Platform.OS === "ios") {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      return status === "granted"
+      try {
+        const { status } = await Permissions.askAsync(perm);
+        return status === "granted"
+      } catch (err) {
+        console.warn(err)
+        return false
+      }
     } else {
       return true
     }
   }
 
-  pickImage = async () => {
+  pickImageFromCamera = async () => {
+    try {
+      const hasPermission = this.askPermission(Permissions.CAMERA)
+      if (!hasPermission) {
+        Alert.alert("Needs Camera Permission")
+        this.goBack()
+        return
+      }
+    } catch (err) {
+      console.error(err)
+      this.goBack()
+      return
+    }
+
     this.setState(
       (s) => ({ ...s, pickerShowup: true }),
       async () => {
@@ -44,40 +63,86 @@ export default class CameraScreen extends PureComponent<Props, State> {
             aspect: [1, 1],
             quality: 1.0,
           })
-
-          this.setState(
-            (s) => ({ ...s, pickerShowup: false }),
-            () => {
-              if (result.cancelled) {
-                this.goBack()
-              } else {
-                this.props.navigation.navigate("CreateMemo", {
-                  ...result,
-                })
-              }
-            }
-          )
+          this.handleImageResult(result)
         } catch (err) {
-          console.error(err)
-          this.setState(
-            (s) => ({ ...s, pickerShowup: false }),
-            () => {
-              this.goBack()
-            }
-          )
+          this.handlePickerErr(err)
         }
       }
     )
   }
 
-  async componentDidMount() {
+  pickImageFromRoll = async () => {
     try {
-      const hasCameraPermission = await this.hasPermission()
-      this.setState({ hasCameraPermission });
+      const hasPermission = this.askPermission(Permissions.CAMERA_ROLL)
+      if (!hasPermission) {
+        Alert.alert("Need Camera Roll Permission")
+        this.goBack()
+        return
+      }
     } catch (err) {
       console.error(err)
       this.goBack()
+      return
     }
+
+    this.setState(
+      (s) => ({ ...s, pickerShowup: true }),
+      async () => {
+        try {
+          const result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1.0,
+          })
+          this.handleImageResult(result)
+        } catch (err) {
+          this.handlePickerErr(err)
+        }
+      }
+    )
+  }
+
+  handlePickerErr = (err: Error) => {
+    console.error(err)
+    this.setState(
+      (s) => ({ ...s, pickerShowup: false }),
+      () => {
+        this.goBack()
+      }
+    )
+  }
+
+  handleImageResult = (imageResult: { cancelled: boolean, uri?: string, width?: number, height?: number }) => {
+    this.setState(
+      (s) => ({ ...s, pickerShowup: false }),
+      () => {
+        if (imageResult.cancelled) {
+          this.goBack()
+        } else {
+          this.props.navigation.navigate("CreateMemo", {
+            ...imageResult,
+          })
+        }
+      }
+    )
+  }
+
+  pickImage = async () => {
+    const actions: { [message: string]: () => any } = {
+      "Take a Photo": this.pickImageFromCamera,
+      "Select from Camera Roll": this.pickImageFromRoll,
+      "Cancel": this.goBack,
+    }
+
+    const options = Object.keys(actions)
+
+    const onSelect = (i: number) => {
+      const key = options[i]
+      if (!key) return
+      actions[key]()
+    }
+
+    ActionSheet.show({ options, cancelButtonIndex: options.length - 1 }, onSelect)
   }
 
   render() {
