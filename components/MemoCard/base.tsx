@@ -1,19 +1,23 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {
   Text,
   Card,
   CardItem,
-  Button,
 } from 'native-base';
 import { Image, StyleSheet } from "react-native"
-import { Memo } from '../models/Memo';
 
 interface Props {
-  memo: Memo,
+  uri: string,
+  Category: ReactNode,
+  SubCategory: ReactNode,
+  Tags: ReactNode,
 }
 
 export default function MemoCard({
-  memo,
+  uri,
+  Category,
+  SubCategory,
+  Tags,
 }: Props) {
 
   return (
@@ -22,39 +26,19 @@ export default function MemoCard({
         header
         style={styles.headerContainer}
       >
-        <Text>
-          {memo.category}
-        </Text>
+        {Category}
         <Text style={styles.separator}>
           >
         </Text>
-        <Text>
-          {memo.subCategory}
-        </Text>
+        {SubCategory}
       </CardItem>
       <CardItem cardBody>
         <Image
-          source={{ uri: memo.uri }}
+          source={{ uri }}
           style={styles.image}
         />
       </CardItem>
-      <CardItem
-        footer
-        style={styles.tagsContainer}
-      >
-        {memo.tags.map((e, i) => (
-          <Button
-            key={i}
-            bordered
-            dark
-            small
-            rounded
-            style={styles.tag}
-          >
-            <Text>{e}</Text>
-          </Button>
-        ))}
-      </CardItem>
+      {Tags}
     </Card >
   )
 }
@@ -87,5 +71,6 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     height: 200,
+    resizeMode: "cover",
   },
 })

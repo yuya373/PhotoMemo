@@ -98,60 +98,45 @@ export default class Picker extends React.PureComponent<Props> {
     } = this.props
 
     return (
-      <View style={style}>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={isOpen}
-          onRequestClose={this.closeModal}>
-          <Header>
-            <Left>
-              <Button
-                transparent
-                onPress={this.closeModal}
-              >
-                <Text>
-                  {multiple ? "Save" : "Cancel"}
-                </Text>
-              </Button>
-            </Left>
-            <Body>
-              <Title>
-                {title}
-              </Title>
-            </Body>
-            <Right>
-              <Button
-                transparent
-                onPress={this.addItem}
-              >
-                <Icon name='add' />
-              </Button>
-            </Right>
-          </Header>
-          <Content>
-            <FlatList
-              extraData={selected}
-              data={items}
-              renderItem={this.renderItem}
-              keyExtractor={this.keyExtractor}
-            />
-          </Content>
-        </Modal>
-
-        <Button
-          full
-          transparent
-          disabled={disabled}
-          onPress={this.openModal}
-          style={styles.openPickerButton}
-        >
-          <Text>
-            {(selected && !Array.isArray(selected)) ?
-              selected.label : placeholder}
-          </Text>
-        </Button>
-      </View>
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={isOpen}
+        onRequestClose={this.closeModal}>
+        <Header>
+          <Left>
+            <Button
+              transparent
+              onPress={this.closeModal}
+            >
+              <Text>
+                {multiple ? "Save" : "Cancel"}
+              </Text>
+            </Button>
+          </Left>
+          <Body>
+            <Title>
+              {title}
+            </Title>
+          </Body>
+          <Right>
+            <Button
+              transparent
+              onPress={this.addItem}
+            >
+              <Icon name='add' />
+            </Button>
+          </Right>
+        </Header>
+        <Content>
+          <FlatList
+            extraData={selected}
+            data={items}
+            renderItem={this.renderItem}
+            keyExtractor={this.keyExtractor}
+          />
+        </Content>
+      </Modal>
     )
   }
 }

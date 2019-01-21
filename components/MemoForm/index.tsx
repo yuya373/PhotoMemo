@@ -17,6 +17,7 @@ import Store from "./../../store"
 import Category from "./Category"
 import SubCategory from "./SubCategory"
 import Tags from "./Tags"
+import MemoCard from "./../MemoCard/Form"
 
 interface Props {
   uri: string,
@@ -191,6 +192,8 @@ export default class MemoForm extends React.Component<Props, State> {
     const {
       uri, width, height,
       tags,
+      category,
+      subCategory,
     } = this.props
 
     return (
@@ -198,18 +201,15 @@ export default class MemoForm extends React.Component<Props, State> {
         <NavigationEvents
           onWillFocus={this.mayDisplayPicker}
         />
-        {
-          uri &&
-          <Thumbnail
-            style={{
-              width,
-              height,
-            }}
-            square={true}
-            source={{ uri }}
-          />
-        }
-
+        <MemoCard
+          uri={uri}
+          category={category ? category.label : undefined}
+          subCategory={subCategory ? subCategory.label : undefined}
+          tags={tags.map((e) => e.label)}
+          onPressCategory={this.openCategory}
+          onPressSubCategory={this.openSubCategory}
+          onPressTags={this.openTags}
+        />
         <Subscribe to={[Store]}>
           {this.renderCategory}
         </Subscribe>
@@ -219,24 +219,6 @@ export default class MemoForm extends React.Component<Props, State> {
         <Subscribe to={[Store]}>
           {this.renderTags}
         </Subscribe>
-        <Container
-          style={styles.tagsContainer}
-        >
-          {tags.map((tag) => (
-            <Button
-              style={{ marginLeft: 10 }}
-              key={tag.label}
-              bordered
-              dark
-              small
-              rounded
-            >
-              <Text>
-                {tag.label}
-              </Text>
-            </Button>
-          ))}
-        </Container>
       </Content>
     )
   }
