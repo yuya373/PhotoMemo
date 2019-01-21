@@ -14,8 +14,6 @@ import MemoCard from "./../MemoCard/Form"
 
 interface Props {
   uri: string,
-  width: number,
-  height: number,
   category: Tag | undefined,
   onCategorySelected: (item: PickerItem) => void,
   subCategory: Tag | undefined,

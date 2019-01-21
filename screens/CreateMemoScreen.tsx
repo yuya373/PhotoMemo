@@ -11,7 +11,6 @@ import {
   Title,
   Text,
 } from "native-base"
-import Layout from "./../constants/Layout"
 import { Tag } from "../models/Tag";
 import { Item as PickerItem } from "./../components/Picker"
 import { Subscribe } from 'unstated';
@@ -163,8 +162,6 @@ export default class CreateMemoScreen extends React.Component<Props, State> {
     } = this.state
 
     const uri = navigation.getParam("uri", null)
-    const width = Layout.window.width
-    const height = width
 
     return (
       <Container>
@@ -191,8 +188,6 @@ export default class CreateMemoScreen extends React.Component<Props, State> {
         <Content>
           <MemoForm
             uri={uri}
-            width={width}
-            height={height}
             category={category}
             subCategory={subCategory}
             tags={tags}
