@@ -9,7 +9,6 @@ import MemoCard from "./base"
 import { Memo } from '../../models/Memo';
 
 interface Props {
-  uri: string,
   memo: Memo,
 }
 

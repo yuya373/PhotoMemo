@@ -1,16 +1,9 @@
 import React from "react"
 import { NavigationEvents } from 'react-navigation';
 import {
-  Thumbnail,
   Content,
-  Container,
-  Button,
-  Text,
 } from "native-base"
 import { Tag } from "./../../models/Tag";
-import {
-  StyleSheet,
-} from "react-native";
 import { Item as PickerItem } from "./../Picker"
 import { Subscribe } from 'unstated';
 import Store from "./../../store"
@@ -190,7 +183,7 @@ export default class MemoForm extends React.Component<Props, State> {
 
   render() {
     const {
-      uri, width, height,
+      uri,
       tags,
       category,
       subCategory,
@@ -223,12 +216,3 @@ export default class MemoForm extends React.Component<Props, State> {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  tagsContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  }
-})

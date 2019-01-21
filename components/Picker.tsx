@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Modal,
   FlatList,
-  View,
 } from "react-native";
 import {
   Icon,
@@ -26,9 +25,6 @@ interface Props {
   onPressItem: (item: Item) => Promise<boolean>,
   selected: Item | undefined | null | Array<Item>,
   title?: string,
-  placeholder: string,
-  disabled?: boolean,
-  style?: any,
   onPressAddItem: () => void,
   isOpen: boolean,
   onClose: () => void,
@@ -88,9 +84,6 @@ export default class Picker extends React.PureComponent<Props> {
   render() {
     const {
       selected,
-      placeholder,
-      disabled,
-      style,
       title,
       items,
       isOpen,

@@ -1,8 +1,5 @@
 import React from "react"
 import { Tag } from "./../../models/Tag";
-import {
-  StyleSheet,
-} from "react-native";
 import Picker, { Item as PickerItem } from "./../../components/Picker"
 
 interface Props {
@@ -35,21 +32,9 @@ export default function Category({
       onClose={onClose}
       onOpen={onOpen}
       items={categories}
-      placeholder="Select Category"
       selected={selected}
-      style={styles.picker}
       onPressItem={onPressItem}
       onPressAddItem={handlePressAddItem}
     />
   )
 }
-
-
-const styles = StyleSheet.create({
-  picker: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-  }
-})
