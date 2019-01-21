@@ -6,6 +6,7 @@ import { Provider } from "unstated"
 import { AsyncStorage } from "react-native"
 import Store from "./store"
 import { Root } from "native-base"
+import STORE_KEY from "./store/key"
 
 interface State {
   isLoadingComplete: boolean,
@@ -46,7 +47,7 @@ export default class App extends React.Component<Props, State> {
 
   _loadResourcesAsync = async () => {
     return Promise.all([
-      AsyncStorage.getItem("state"),
+      AsyncStorage.getItem(STORE_KEY),
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
         require('./assets/images/robot-prod.png'),

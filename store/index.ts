@@ -2,6 +2,7 @@ import { Container } from 'unstated';
 import { Memo } from "./../models/Memo"
 import { Tag, Tags, addTag } from "./../models/Tag"
 import { AsyncStorage } from "react-native"
+import STORE_KEY from "./key"
 
 export interface State {
   memos: Array<Memo>,
@@ -21,7 +22,7 @@ export default class Store extends Container<State> {
   }
 
   storeState = (): Promise<void> => {
-    return AsyncStorage.setItem("state", JSON.stringify(this.state))
+    return AsyncStorage.setItem(STORE_KEY, JSON.stringify(this.state))
   }
 
   createTag = async (tag: Tag): Promise<void> => {
