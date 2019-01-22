@@ -26,6 +26,8 @@ interface Props {
 interface State {
   id: string,
   uri: string,
+  width: number,
+  height: number,
   category: Tag | undefined,
   subCategory: Tag | undefined,
   tags: Array<Tag>,
@@ -88,13 +90,18 @@ class EditMemoScreen extends React.Component<Props, State> {
     const {
       id,
       uri,
+      width,
+      height,
       category,
       subCategory,
       tags,
     } = this.state
+
     return {
       id,
       uri,
+      width,
+      height,
       category: category!.label,
       subCategory: subCategory!.label,
       tags: tags.map((e) => e.label),
@@ -129,6 +136,8 @@ class EditMemoScreen extends React.Component<Props, State> {
     this.state = {
       id,
       uri: memo.uri,
+      width: memo.width,
+      height: memo.height,
       category,
       subCategory,
       tags,

@@ -40,9 +40,7 @@ export default class HomeScreen extends React.Component<Props, State> {
 
   goImage = (memo: Memo) => () =>
     this.props.navigation.navigate("Image", {
-      uri: memo.uri,
-      width: memo.width,
-      height: memo.height,
+      id: memo.id,
     })
 
   renderMemo = ({ item }: { item: Memo }) => {

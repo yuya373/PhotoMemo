@@ -2,32 +2,37 @@ import React from "react"
 import { NavigationScreenProp } from "react-navigation";
 import { Image, StyleSheet, ScrollView, Dimensions } from "react-native"
 import { Container, Content, Button, Icon } from "native-base"
+import { Subscribe } from "unstated"
+import Store from "./../store"
+import { Memo } from "../models/Memo";
 
 interface Props {
   navigation: NavigationScreenProp<any, any>,
+  store: Store,
 }
 interface State {
-  uri: string,
-  width: number | undefined,
-  height: number | undefined,
+  memo: Memo,
 }
 
-export default class ImageScreen extends React.Component<Props, State> {
+class ImageScreen extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    const { navigation } = props
-    const uri = navigation.getParam("uri", null)
-    if (!uri) {
+    const { navigation, store } = props
+    const id = navigation.getParam("id", null)
+    if (!id) {
       navigation.goBack()
+      console.error(`id not found`)
+      return
+    }
+    const memo = store.findMemo(id)
+    if (!memo) {
+      navigation.goBack()
+      console.error(`Memo not found: ${id}`)
       return
     }
 
-    const width = navigation.getParam("width", undefined)
-    const height = navigation.getParam("height", undefined)
     this.state = {
-      uri,
-      width,
-      height
+      memo,
     }
   }
 
@@ -36,12 +41,20 @@ export default class ImageScreen extends React.Component<Props, State> {
       uri,
       width,
       height,
-    } = this.state
+    } = this.state.memo
 
     if (width == null || height == null) {
       Image.getSize(
         uri,
-        (width, height) => this.setState({ width, height }),
+        async (width, height) => {
+          const memo = {
+            ...this.state.memo,
+            width,
+            height,
+          }
+          await this.props.store.updateMemo(memo)
+          this.setState({ memo })
+        },
         (error) => {
           console.error(error)
           this.props.navigation.goBack()
@@ -56,7 +69,7 @@ export default class ImageScreen extends React.Component<Props, State> {
       uri,
       width,
       height,
-    } = this.state
+    } = this.state.memo
     const w = Dimensions.get('window')
     const ww = w.width;
     const wh = w.height;
@@ -118,3 +131,16 @@ const styles = StyleSheet.create({
     zIndex: 1,
   }
 })
+
+export default ({ navigation }: { navigation: NavigationScreenProp<any, any> }) => (
+  <Subscribe to={[Store]}>
+    {
+      (store: Store) => (
+        <ImageScreen
+          navigation={navigation}
+          store={store}
+        />
+      )
+    }
+  </Subscribe>
+)
