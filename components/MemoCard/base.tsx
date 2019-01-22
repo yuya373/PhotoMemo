@@ -89,10 +89,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   editButtonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
     paddingBottom: 5,
   },
   separator: {

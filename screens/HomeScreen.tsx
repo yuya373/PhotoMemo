@@ -21,9 +21,10 @@ interface State {
 
 interface Props {
   navigation: NavigationScreenProp<any, any>,
+  store: Store,
 }
 
-export default class HomeScreen extends React.Component<Props, State> {
+class HomeScreen extends React.Component<Props, State> {
   static navigationOptions = {
     title: "All Memos",
   };
@@ -43,19 +44,55 @@ export default class HomeScreen extends React.Component<Props, State> {
       id: memo.id,
     })
 
+  getSubCategoryProps = (memo: Memo) => {
+    const { store } = this.props
+    const categories = store.collectCategory()
+    const category = categories.find((e) => {
+      return e.category.label === memo.category
+    })
+
+    return {
+      category: memo.category,
+      subCategories: category ?
+        Array.from(category.subCategories) :
+        [],
+    }
+  }
+
+  goSubCategories = (memo: Memo) => () => {
+    const { navigation } = this.props
+
+    navigation.navigate(
+      "SubCategory",
+      this.getSubCategoryProps(memo),
+    )
+  }
+
+  goMemos = (memo: Memo) => () => {
+    const { navigation } = this.props
+    const { category, subCategory } = memo
+    navigation.navigate("Memos", {
+      category,
+      subCategory,
+    })
+  }
+
   renderMemo = ({ item }: { item: Memo }) => {
     return (
       <MemoCard
         memo={item}
         onPressEdit={this.goEditMemo(item)}
         onPressImage={this.goImage(item)}
+        onPressCategory={this.goSubCategories(item)}
+        onPressSubCategory={this.goMemos(item)}
       />
     )
   }
 
   keyExtractor = (memo: Memo) => memo.uri
 
-  renderMemos = (store: Store) => {
+  renderMemos = () => {
+    const { store } = this.props
     const memos = []
     const {
       doSearch,
@@ -103,9 +140,7 @@ export default class HomeScreen extends React.Component<Props, State> {
             onClear={this.onSearchClear}
             placeholder="Search by tag"
           />
-          <Subscribe to={[Store]} >
-            {this.renderMemos}
-          </Subscribe>
+          {this.renderMemos()}
         </Content>
         <Fab
           direction="up"
@@ -118,3 +153,14 @@ export default class HomeScreen extends React.Component<Props, State> {
     );
   }
 }
+
+export default ({ navigation }: { navigation: NavigationScreenProp<any, any> }) => (
+  <Subscribe to={[Store]}>
+    {(store: Store) => (
+      <HomeScreen
+        store={store}
+        navigation={navigation}
+      />
+    )}
+  </Subscribe>
+)

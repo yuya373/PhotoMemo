@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 import { Memo, create as createMemo, NewMemo } from "./../models/Memo"
-import { Tag, Tags, addTag } from "./../models/Tag"
+import { Tag, Tags, addTag, Label } from "./../models/Tag"
 import { AsyncStorage } from "react-native"
 import STORE_KEY from "./key"
 
@@ -79,5 +79,32 @@ export default class Store extends Container<State> {
     })
 
     return tags
+  }
+
+  collectCategory = (): Array<{ category: Tag, subCategories: Set<Label> }> => {
+    const items: { [category: string]: { category: Tag, subCategories: Set<Label> } } = {}
+    const _cat: { [label: string]: Tag } = this.state.tags["0"].reduce((
+      a: { [label: string]: Tag },
+      e: Tag
+    ) => {
+      a[e.label] = e
+      return a
+    }, {})
+
+    this.state.memos.forEach((e) => {
+      const cat = _cat[e.category]
+      if (cat) {
+        if (!items[cat.label]) {
+          items[cat.label] = {
+            category: cat,
+            subCategories: new Set([]),
+          }
+        }
+
+        items[cat.label].subCategories.add(e.subCategory)
+      }
+    })
+
+    return Object.values(items)
   }
 }

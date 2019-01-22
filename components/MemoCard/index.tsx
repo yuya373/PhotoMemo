@@ -12,25 +12,47 @@ interface Props {
   memo: Memo,
   onPressEdit?: () => void,
   onPressImage?: () => void,
+  onPressCategory?: () => void,
+  onPressSubCategory?: () => void,
 }
 
 export default function StaticMemoCard({
   memo,
   onPressEdit,
   onPressImage,
+  onPressCategory,
+  onPressSubCategory,
 }: Props) {
 
-  const Category = (
-    <Text>
-      {memo.category}
-    </Text>
-  )
+  const Category = onPressCategory ? (
+    <Button
+      transparent
+      small
+      dark
+      onPress={onPressCategory}
+    >
+      <Text
+        style={styles.buttonText}
+      >
+        {memo.category}
+      </Text>
+    </Button>
+  ) : (<Text>{memo.category}</Text>)
 
-  const SubCategory = (
-    <Text>
-      {memo.subCategory}
-    </Text>
-  )
+  const SubCategory = onPressSubCategory ? (
+    <Button
+      transparent
+      small
+      dark
+      onPress={onPressSubCategory}
+    >
+      <Text
+        style={styles.buttonText}
+      >
+        {memo.subCategory}
+      </Text>
+    </Button>
+  ) : (<Text>{memo.subCategory}</Text>)
 
   const Tags = (
     <CardItem
@@ -77,5 +99,11 @@ const styles = StyleSheet.create({
   tag: {
     marginRight: 10,
     marginBottom: 10,
+  },
+  buttonText: {
+    paddingLeft: 0,
+    paddingRight: 0,
+    fontWeight: "600",
+    fontSize: 16,
   },
 })

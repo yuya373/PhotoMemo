@@ -20,7 +20,7 @@ interface Props {
 
 type Item = {
   category: Tag,
-  subCategories: Array<Label>,
+  subCategories: Set<Label>,
 }
 
 export default class BrowseScreen extends React.Component<Props> {
@@ -40,7 +40,7 @@ export default class BrowseScreen extends React.Component<Props> {
     const onPress = () => {
       this.goSubCategories(
         item.category.label,
-        Array.from(new Set(item.subCategories)),
+        Array.from(item.subCategories),
       )
     }
 
@@ -64,30 +64,7 @@ export default class BrowseScreen extends React.Component<Props> {
   }
 
   collectCategory = (store: Store): Array<Item> => {
-    const items: { [category: string]: Item } = {}
-    const _cat: { [label: string]: Tag } = store.state.tags["0"].reduce((
-      a: { [label: string]: Tag },
-      e: Tag
-    ) => {
-      a[e.label] = e
-      return a
-    }, {})
-
-    store.state.memos.forEach((e) => {
-      const cat = _cat[e.category]
-      if (cat) {
-        if (!items[cat.label]) {
-          items[cat.label] = {
-            category: cat,
-            subCategories: [],
-          }
-        }
-
-        items[cat.label].subCategories.push(e.subCategory)
-      }
-    })
-
-    return Object.values(items)
+    return store.collectCategory()
   }
 
   renderList = (store: Store) => {

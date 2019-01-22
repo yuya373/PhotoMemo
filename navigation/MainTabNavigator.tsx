@@ -11,6 +11,9 @@ import MemosScreen from "../screens/MemosScreen"
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
+  Browse: BrowseScreen,
+  SubCategory: SubCategoryScreen,
+  Memos: MemosScreen,
 });
 
 HomeStack.navigationOptions = {
