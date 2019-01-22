@@ -80,8 +80,9 @@ class EditMemoScreen extends React.Component<Props, State> {
       }
     })
   }
-  updateMemo = () => {
-    this.props.store.updateMemo(this.buildMemo())
+  updateMemo = async () => {
+    await this.props.store.updateMemo(this.buildMemo())
+    this.goBack()
   }
   buildMemo = (): Memo => {
     const {
