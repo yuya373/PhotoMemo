@@ -1,6 +1,6 @@
 import React from "react"
 import { NavigationScreenProp } from "react-navigation";
-import { Image, StyleSheet, ScrollView } from "react-native"
+import { Image, StyleSheet, ScrollView, Dimensions } from "react-native"
 import { Container, Content, Button, Icon } from "native-base"
 
 interface Props {
@@ -30,6 +30,7 @@ export default class ImageScreen extends React.Component<Props, State> {
       height
     }
   }
+
   componentDidMount() {
     const {
       uri,
@@ -48,6 +49,7 @@ export default class ImageScreen extends React.Component<Props, State> {
       )
     }
   }
+
   render() {
     const { navigation } = this.props
     const {
@@ -55,6 +57,16 @@ export default class ImageScreen extends React.Component<Props, State> {
       width,
       height,
     } = this.state
+    const w = Dimensions.get('window')
+    const ww = w.width;
+    const wh = w.height;
+
+    const scaleX =
+      width ? ((width > ww) ? ww / width : width / ww) : 1
+    const scaleY =
+      height ? ((height > wh) ? wh / height : height / wh) : 1
+    const minZoom = Math.min(scaleX, scaleY)
+    const maxZoom = 1 / minZoom
 
     return (
       <Container>
@@ -70,11 +82,18 @@ export default class ImageScreen extends React.Component<Props, State> {
         </Content>
         <ScrollView
           horizontal={true}
+          centerContent={true}
+          maximumZoomScale={maxZoom}
         >
           <ScrollView
+            centerContent={true}
+            maximumZoomScale={maxZoom}
           >
             <Image
-              style={{ width, height }}
+              style={{
+                width: width ? width * minZoom : width,
+                height: height ? height * minZoom : height,
+              }}
               source={{ uri }}
             />
           </ScrollView>
@@ -86,10 +105,16 @@ export default class ImageScreen extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   closeIconContainer: {
     position: "absolute",
     top: 30,
-    left: 10,
+    right: 10,
     zIndex: 1,
   }
 })
