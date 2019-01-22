@@ -22,3 +22,12 @@ export function create(memo: NewMemo): Memo {
     id,
   }
 }
+
+export function hasTag(memo: Memo, label: Label): boolean {
+  for (let tag of memo.tags) {
+    if (tag.indexOf(label) >= 0) {
+      return true
+    }
+  }
+  return false
+}

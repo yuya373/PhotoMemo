@@ -8,7 +8,7 @@ import { FlatList } from "react-native"
 import { Subscribe } from 'unstated';
 import Store from '../store';
 import { Label } from '../models/Tag';
-import { Memo } from '../models/Memo';
+import { Memo, hasTag } from '../models/Memo';
 import MemoCard from "./../components/MemoCard"
 import Search from "./../components/Search"
 
@@ -71,11 +71,8 @@ export default class MemosScreen extends React.Component<Props, State> {
           continue
         }
 
-        for (let tag of e.tags) {
-          if (tag.indexOf(this.state.searchInputValue) >= 0) {
-            memos.push(e)
-            break
-          }
+        if (hasTag(e, this.state.searchInputValue)) {
+          memos.push(e)
         }
       }
     }
