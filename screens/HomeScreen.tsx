@@ -25,9 +25,6 @@ interface Props {
 }
 
 class HomeScreen extends React.Component<Props, State> {
-  static navigationOptions = {
-    title: "All Memos",
-  };
   displayCamera = () => this.props.navigation.navigate("Camera")
 
   state = {
@@ -154,13 +151,20 @@ class HomeScreen extends React.Component<Props, State> {
   }
 }
 
-export default ({ navigation }: { navigation: NavigationScreenProp<any, any> }) => (
-  <Subscribe to={[Store]}>
-    {(store: Store) => (
-      <HomeScreen
-        store={store}
-        navigation={navigation}
-      />
-    )}
-  </Subscribe>
-)
+
+export default function ConnectedHomeScreen({ navigation }: { navigation: NavigationScreenProp<any, any> }) {
+  return (
+    <Subscribe to={[Store]}>
+      {(store: Store) => (
+        <HomeScreen
+          store={store}
+          navigation={navigation}
+        />
+      )}
+    </Subscribe>
+  )
+}
+
+ConnectedHomeScreen.navigationOptions = {
+  header: null
+}
