@@ -42,7 +42,7 @@ export default class CameraScreen extends PureComponent<Props, State> {
 
   pickImageFromCamera = async () => {
     try {
-      const hasPermission = this.askPermission(Permissions.CAMERA)
+      const hasPermission = await this.askPermission(Permissions.CAMERA)
       if (!hasPermission) {
         Alert.alert("Needs Camera Permission")
         this.goBack()
@@ -73,7 +73,7 @@ export default class CameraScreen extends PureComponent<Props, State> {
 
   pickImageFromRoll = async () => {
     try {
-      const hasPermission = this.askPermission(Permissions.CAMERA_ROLL)
+      const hasPermission = await this.askPermission(Permissions.CAMERA_ROLL)
       if (!hasPermission) {
         Alert.alert("Need Camera Roll Permission")
         this.goBack()
