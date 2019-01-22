@@ -10,15 +10,25 @@ import Store from '../store';
 import { Label } from '../models/Tag';
 import { Memo } from '../models/Memo';
 import MemoCard from "./../components/MemoCard"
+import Search from "./../components/Search"
 
 interface Props {
   navigation: NavigationScreenProp<any, any>,
 }
 
-export default class MemosScreen extends React.Component<Props> {
+interface State {
+  searchInputValue: string,
+  doSearch: boolean,
+}
+
+export default class MemosScreen extends React.Component<Props, State> {
   static navigationOptions = {
     title: 'Memos',
   };
+  state = {
+    searchInputValue: "",
+    doSearch: false,
+  }
 
   keyExtractor = (item: Memo) => item.uri
   renderItem = ({ item }: { item: Memo }) => {
@@ -43,8 +53,22 @@ export default class MemosScreen extends React.Component<Props> {
       return
     }
 
-    const memos = store.state.memos.
-      filter((e) => e.category === category && e.subCategory === subCategory)
+    const memos: Array<Memo> = []
+    for (let e of store.state.memos) {
+      if (e.category === category && e.subCategory === subCategory) {
+        if (!this.state.doSearch) {
+          memos.push(e)
+          continue
+        }
+
+        for (let tag of e.tags) {
+          if (tag.indexOf(this.state.searchInputValue) >= 0) {
+            memos.push(e)
+            break
+          }
+        }
+      }
+    }
 
     return (
       <FlatList
@@ -55,10 +79,33 @@ export default class MemosScreen extends React.Component<Props> {
     )
   }
 
+  onSearchSubmit = () => {
+    const { searchInputValue } = this.state
+    if (searchInputValue.length <= 0) {
+      this.clearSearchInput()
+      return
+    }
+    this.setState({ doSearch: true })
+  }
+  onSearchTextChange = (searchInputValue: string) => {
+    this.setState({ searchInputValue })
+  }
+  clearSearchInput = () => {
+    this.setState({ searchInputValue: "", doSearch: false })
+  }
+
   render() {
     return (
       <SafeAreaView>
-        <Content>
+        <Content
+        >
+          <Search
+            inputValue={this.state.searchInputValue}
+            onChangeText={this.onSearchTextChange}
+            onSubmit={this.onSearchSubmit}
+            onClear={this.clearSearchInput}
+            placeholder="Search by tag"
+          />
           <Subscribe to={[Store]}>
             {this.renderList}
           </Subscribe>
