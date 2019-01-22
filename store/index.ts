@@ -44,12 +44,13 @@ export default class Store extends Container<State> {
   }
 
   updateMemo = async (memo: Memo): Promise<void> => {
-    await this.setState((s) => ({
-      ...s,
-      memos: [memo].concat(
-        s.memos.filter((e) => e.id !== memo.id)
-      ),
-    }))
+    await this.setState((s) => {
+      const memos = s.memos.map((e) => {
+        if (e.id === memo.id) return memo
+        return e
+      })
+      return { ...s, memos }
+    })
     return this.storeState()
   }
 
