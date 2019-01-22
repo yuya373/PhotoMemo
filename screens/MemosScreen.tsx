@@ -30,11 +30,21 @@ export default class MemosScreen extends React.Component<Props, State> {
     doSearch: false,
   }
 
+  goEditMemo = (memo: Memo) => () =>
+    this.props.navigation.navigate("EditMemo", { id: memo.id })
+  goImage = (memo: Memo) => () =>
+    this.props.navigation.navigate("Image", {
+      uri: memo.uri,
+      width: memo.width,
+      height: memo.height,
+    })
   keyExtractor = (item: Memo) => item.uri
   renderItem = ({ item }: { item: Memo }) => {
     return (
       <MemoCard
         memo={item}
+        onPressEdit={this.goEditMemo(item)}
+        onPressImage={this.goImage(item)}
       />
     )
   }
