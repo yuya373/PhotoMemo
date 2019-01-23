@@ -96,15 +96,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     paddingBottom: 2,
   },
-  tagsContainer: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  tag: {
-    marginRight: 10
-  },
   image: {
     flex: 1,
     height: 200,

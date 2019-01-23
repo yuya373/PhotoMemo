@@ -1,19 +1,12 @@
 import React from "react"
 import {
   StyleSheet,
-  Modal,
   FlatList,
 } from "react-native";
 import {
   Icon,
   Text,
   Button,
-  Header,
-  Left,
-  Right,
-  Body,
-  Title,
-  Content,
 } from "native-base"
 
 export interface Item {
@@ -22,34 +15,23 @@ export interface Item {
 
 interface Props {
   items: Array<Item>,
-  onPressItem: (item: Item) => Promise<boolean>,
-  selected: Item | undefined | null | Array<Item>,
-  title?: string,
-  onPressAddItem: () => void,
-  isOpen: boolean,
-  onClose: () => void,
-  onOpen: () => void,
-  multiple?: boolean,
+  selected: string | Array<string>,
+  onPressItem: (item: Item) => void,
 }
 
 export default class Picker extends React.PureComponent<Props> {
-  openModal = () => this.props.onOpen()
-  closeModal = () => this.props.onClose()
   onPressItem = (item: Item) => {
     const {
       onPressItem,
     } = this.props
-
-    onPressItem(item).then((closable) => {
-      if (closable) this.closeModal()
-    })
+    onPressItem(item)
   }
   renderItem = ({ item }: { item: Item }) => {
     const { selected } = this.props
     const isSelected = selected != null &&
       (!Array.isArray(selected) ?
-        (selected.label === item.label) :
-        Boolean(selected.find((e) => e.label === item.label)))
+        (selected === item.label) :
+        Boolean(selected.find((e) => e === item.label)))
     const buttonLabelColor = isSelected ?
       styles.selectedColor : undefined
 
@@ -76,60 +58,20 @@ export default class Picker extends React.PureComponent<Props> {
     )
   }
   keyExtractor = (item: Item) => item.label
-  addItem = () => {
-    this.closeModal()
-    this.props.onPressAddItem()
-  }
 
   render() {
     const {
       selected,
-      title,
       items,
-      isOpen,
-      multiple,
     } = this.props
 
     return (
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={isOpen}
-        onRequestClose={this.closeModal}>
-        <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={this.closeModal}
-            >
-              <Text>
-                {multiple ? "Save" : "Cancel"}
-              </Text>
-            </Button>
-          </Left>
-          <Body>
-            <Title>
-              {title}
-            </Title>
-          </Body>
-          <Right>
-            <Button
-              transparent
-              onPress={this.addItem}
-            >
-              <Icon name='add' />
-            </Button>
-          </Right>
-        </Header>
-        <Content>
-          <FlatList
-            extraData={selected}
-            data={items}
-            renderItem={this.renderItem}
-            keyExtractor={this.keyExtractor}
-          />
-        </Content>
-      </Modal>
+      <FlatList
+        extraData={selected}
+        data={items}
+        renderItem={this.renderItem}
+        keyExtractor={this.keyExtractor}
+      />
     )
   }
 }

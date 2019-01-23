@@ -2,11 +2,12 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
-import { Provider } from "unstated"
-import { AsyncStorage } from "react-native"
-import Store from "./store"
 import { Root } from "native-base"
-import STORE_KEY from "./store/key"
+import { createStore, applyMiddleware } from 'redux';
+import { rootReducer, RootState } from './reducers';
+import { Provider } from "react-redux"
+import thunk from 'redux-thunk';
+import { loadInitialState } from './actions/initialState';
 
 interface State {
   isLoadingComplete: boolean,
@@ -16,14 +17,24 @@ interface Props {
   skipLoadingScreen: boolean,
 }
 
+const store = createStore(
+  rootReducer,
+  applyMiddleware(thunk)
+)
+
 export default class App extends React.Component<Props, State> {
-  storeInstance: Store | undefined = undefined
+  storeInstance: RootState | undefined = undefined
   state = {
     isLoadingComplete: false,
   };
 
+  componentDidMount() {
+    store.dispatch(loadInitialState())
+  }
+
   render() {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+    if (!this.state.isLoadingComplete &&
+      !this.props.skipLoadingScreen) {
       return (
         <AppLoading
           startAsync={this._loadResourcesAsync}
@@ -31,23 +42,22 @@ export default class App extends React.Component<Props, State> {
           onFinish={this._handleFinishLoading}
         />
       );
-    } else {
-      return (
-        <Root>
-          <Provider inject={[this.storeInstance!]}>
-            <View style={styles.container}>
-              {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-              <AppNavigator />
-            </View>
-          </Provider>
-        </Root>
-      );
     }
+
+    return (
+      <Provider store={store}>
+        <Root>
+          <View style={styles.container}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+            <AppNavigator />
+          </View>
+        </Root>
+      </Provider >
+    )
   }
 
   _loadResourcesAsync = async () => {
     return Promise.all([
-      AsyncStorage.getItem(STORE_KEY),
       Asset.loadAsync([
         require('./assets/images/robot-dev.png'),
         require('./assets/images/robot-prod.png'),
@@ -61,11 +71,7 @@ export default class App extends React.Component<Props, State> {
         'Roboto': require('native-base/Fonts/Roboto.ttf'),
         'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
       }),
-    ]).then(([state, ..._]) => {
-      this.storeInstance = new Store(
-        state ? JSON.parse(state) : undefined
-      )
-    });
+    ]).then(() => { });
   };
 
   _handleLoadingError = (error: Error) => {

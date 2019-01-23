@@ -3,17 +3,14 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import BrowseScreen from "../screens/BrowseScreen"
-import SubCategoryScreen from "../screens/SubCategoryScreen"
-import MemosScreen from "../screens/MemosScreen"
+import { HomeScreenContainer } from '../container/HomeScreenContainer';
+import { MemosScreenContainer } from '../container/MemosScreenContainer';
+import { BrowseScreenContainer } from '../container/BrowseScreenContainer';
+import { SubCategoryScreenContainer } from '../container/SubCategoryScreenContainer';
 
 const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-  Browse: BrowseScreen,
-  SubCategory: SubCategoryScreen,
-  Memos: MemosScreen,
+  Home: HomeScreenContainer,
 });
 
 HomeStack.navigationOptions = {
@@ -45,9 +42,9 @@ SettingsStack.navigationOptions = {
 };
 
 const BrowseStack = createStackNavigator({
-  Browse: BrowseScreen,
-  SubCategory: SubCategoryScreen,
-  Memos: MemosScreen,
+  Browse: BrowseScreenContainer,
+  SubCategory: SubCategoryScreenContainer,
+  Memos: MemosScreenContainer,
 })
 
 BrowseStack.navigationOptions = {

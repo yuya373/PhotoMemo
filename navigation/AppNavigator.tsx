@@ -5,20 +5,24 @@ import {
 } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
-import CameraScreen from "./../screens/CameraScreen"
-import CreateMemoScreen from "./../screens/CreateMemoScreen"
-import CreateTagScreen from "./../screens/CreateTagScreen"
-import EditMemoScreen from "./../screens/EditMemoScreen"
-import ImageScreen from "./../screens/ImageScreen"
+import { CreateMemoScreenContainer } from '../container/CreateMemoScreenContainer';
+import { CreateTagScreenContainer } from '../container/CreateTagScreenContainer';
+import { EditMemoScreenContainer } from '../container/EditMemoScreenContainer';
+import { ImageScreenContainer } from '../container/ImageScreenContainer';
+import { CategoryContainer } from '../container/MemoForm/CategoryContainer';
+import { SubCategoryContainer } from '../container/MemoForm/SubCategoryContainer';
+import { TagsContainer } from '../container/MemoForm/TagsContainer';
 
 const MainStack = createStackNavigator(
   {
     Main: MainTabNavigator,
-    Camera: CameraScreen,
-    CreateMemo: CreateMemoScreen,
-    CreateTag: CreateTagScreen,
-    EditMemo: EditMemoScreen,
-    Image: ImageScreen,
+    CreateMemo: CreateMemoScreenContainer,
+    CreateTag: CreateTagScreenContainer,
+    EditMemo: EditMemoScreenContainer,
+    Image: ImageScreenContainer,
+    CategoryPicker: CategoryContainer,
+    SubCategoryPicker: SubCategoryContainer,
+    TagsPicker: TagsContainer,
   },
   {
     mode: "modal",

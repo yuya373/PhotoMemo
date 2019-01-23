@@ -5,18 +5,18 @@ import {
   Button,
 } from 'native-base';
 import { StyleSheet } from "react-native"
-import MemoCard from "./base"
+import BaseMemoCard from "./base"
 import { Memo } from '../../models/Memo';
 
 interface Props {
   memo: Memo,
-  onPressEdit?: () => void,
-  onPressImage?: () => void,
-  onPressCategory?: () => void,
-  onPressSubCategory?: () => void,
+  onPressEdit: () => void,
+  onPressImage: () => void,
+  onPressCategory: (category: string) => void,
+  onPressSubCategory: (category: string, subCategory: string) => void,
 }
 
-export default function StaticMemoCard({
+export function MemoCard({
   memo,
   onPressEdit,
   onPressImage,
@@ -29,7 +29,7 @@ export default function StaticMemoCard({
       transparent
       small
       dark
-      onPress={onPressCategory}
+      onPress={() => onPressCategory(memo.category)}
     >
       <Text
         style={styles.buttonText}
@@ -44,7 +44,7 @@ export default function StaticMemoCard({
       transparent
       small
       dark
-      onPress={onPressSubCategory}
+      onPress={() => onPressSubCategory(memo.category, memo.subCategory)}
     >
       <Text
         style={styles.buttonText}
@@ -75,7 +75,7 @@ export default function StaticMemoCard({
   )
 
   return (
-    <MemoCard
+    <BaseMemoCard
       uri={memo.uri}
       Category={Category}
       SubCategory={SubCategory}

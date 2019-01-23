@@ -1,40 +1,53 @@
 import React from "react"
 import { Tag } from "./../../models/Tag";
-import Picker, { Item as PickerItem } from "./../../components/Picker"
+import Picker from "./../../components/Picker"
+import {
+  Container,
+  Content,
+} from "native-base"
+import { Header } from "./Header";
 
 interface Props {
-  isOpen: boolean,
   categories: Array<Tag>,
-  selected: Tag | undefined,
-  onOpen: () => void,
-  onClose: () => void,
-  onPressItem: (item: PickerItem) => Promise<boolean>,
+  selected: string,
+  onPressItem: (item: string) => void,
   onPressAddItem: (tagLevel: "0") => void,
+  goBack: () => void,
 }
 
 export default function Category({
-  isOpen,
-  categories,
   selected,
-  onOpen,
-  onClose,
+  categories,
   onPressItem,
   onPressAddItem,
+  goBack,
 }: Props) {
   const handlePressAddItem = () => {
     onPressAddItem("0")
   }
+  const handlePressItem = ({ label }: { label: string }) => {
+    const isSame = selected === label
+    onPressItem(label)
+
+    if (isSame) return
+    goBack()
+  }
 
   return (
-    <Picker
-      title="Categories"
-      isOpen={isOpen}
-      onClose={onClose}
-      onOpen={onOpen}
-      items={categories}
-      selected={selected}
-      onPressItem={onPressItem}
-      onPressAddItem={handlePressAddItem}
-    />
+    <Container>
+      <Header
+        leftButtonLabel="Cancel"
+        title="Categories"
+        onPressAddItem={handlePressAddItem}
+        onPressLeftButton={goBack}
+      />
+      <Content>
+        <Picker
+          items={categories}
+          selected={selected}
+          onPressItem={handlePressItem}
+        />
+      </Content>
+    </Container>
   )
 }

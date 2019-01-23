@@ -13,6 +13,8 @@ interface Props {
   onChangeText: (text: string) => void,
   onSubmit: () => void,
   onClear: () => void,
+  onFocus: () => void,
+  onBlur: () => void,
   placeholder: string,
 }
 
@@ -21,6 +23,8 @@ export default function Search({
   onChangeText,
   onSubmit,
   onClear,
+  onFocus,
+  onBlur,
   placeholder,
 }: Props) {
 
@@ -37,6 +41,8 @@ export default function Search({
           returnKeyType="search"
           onChangeText={onChangeText}
           onSubmitEditing={onSubmit}
+          onFocus={onFocus}
+          onBlur={onBlur}
           value={inputValue}
         />
         <Button

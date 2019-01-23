@@ -1,75 +1,29 @@
 import React from "react"
-import { NavigationScreenProp } from "react-navigation";
+import { NavigationScreenProp, NavigationState } from "react-navigation";
 import { Image, StyleSheet, ScrollView, Dimensions } from "react-native"
 import { Container, Content, Button, Icon } from "native-base"
-import { Subscribe } from "unstated"
-import Store from "./../store"
-import { Memo } from "../models/Memo";
 
 interface Props {
-  navigation: NavigationScreenProp<any, any>,
-  store: Store,
+  navigation: NavigationScreenProp<NavigationState>,
+  uri: string,
+  width: number,
+  height: number,
+  isLoading: boolean,
 }
-interface State {
-  memo: Memo,
-}
 
-class ImageScreen extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    const { navigation, store } = props
-    const id = navigation.getParam("id", null)
-    if (!id) {
-      navigation.goBack()
-      console.error(`id not found`)
-      return
-    }
-    const memo = store.findMemo(id)
-    if (!memo) {
-      navigation.goBack()
-      console.error(`Memo not found: ${id}`)
-      return
-    }
-
-    this.state = {
-      memo,
-    }
-  }
-
-  componentDidMount() {
-    const {
-      uri,
-      width,
-      height,
-    } = this.state.memo
-
-    if (width == null || height == null) {
-      Image.getSize(
-        uri,
-        async (width, height) => {
-          const memo = {
-            ...this.state.memo,
-            width,
-            height,
-          }
-          await this.props.store.updateMemo(memo)
-          this.setState({ memo })
-        },
-        (error) => {
-          console.error(error)
-          this.props.navigation.goBack()
-        }
-      )
-    }
-  }
-
+export class ImageScreen extends React.Component<Props, {}> {
   render() {
-    const { navigation } = this.props
     const {
+      isLoading,
       uri,
       width,
       height,
-    } = this.state.memo
+      navigation,
+    } = this.props
+
+    // TODO: display loading
+    if (isLoading) return null
+
     const w = Dimensions.get('window')
     const ww = w.width;
     const wh = w.height;
@@ -131,16 +85,3 @@ const styles = StyleSheet.create({
     zIndex: 1,
   }
 })
-
-export default ({ navigation }: { navigation: NavigationScreenProp<any, any> }) => (
-  <Subscribe to={[Store]}>
-    {
-      (store: Store) => (
-        <ImageScreen
-          navigation={navigation}
-          store={store}
-        />
-      )
-    }
-  </Subscribe>
-)

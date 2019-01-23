@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationScreenProp } from "react-navigation";
 import {
   Content,
   Left,
@@ -10,39 +9,24 @@ import {
 } from "native-base"
 import SafeAreaView from "./../components/SaveAreaView"
 import { FlatList } from "react-native"
-import { Subscribe } from 'unstated';
-import Store from '../store';
-import { Tag, Label } from '../models/Tag';
 
 interface Props {
-  navigation: NavigationScreenProp<any, any>,
+  categories: Array<string>,
+  onPressItem: (category: string) => void,
 }
 
-type Item = {
-  category: Tag,
-  subCategories: Set<Label>,
-}
+type Item = string
 
-export default class BrowseScreen extends React.Component<Props> {
+export class BrowseScreen extends React.Component<Props> {
   static navigationOptions = {
     title: 'Categories',
   };
 
-  goSubCategories = (category: Label, subCategories: Array<Label>) => {
-    this.props.navigation.navigate("SubCategory", {
-      category,
-      subCategories,
-    })
-  }
-  keyExtractor = (item: Item) => item.category.label
+  keyExtractor = (item: Item) => item
   renderItem = ({ item, index }: { item: Item, index: number }) => {
     const isFirst = index === 0
-    const onPress = () => {
-      this.goSubCategories(
-        item.category.label,
-        Array.from(item.subCategories),
-      )
-    }
+    const onPress = () => this.props.onPressItem(item)
+
 
     return (
       <ListItem
@@ -53,7 +37,7 @@ export default class BrowseScreen extends React.Component<Props> {
       >
         <Left>
           <Text>
-            {item.category.label}
+            {item}
           </Text>
         </Left>
         <Right>
@@ -63,29 +47,16 @@ export default class BrowseScreen extends React.Component<Props> {
     )
   }
 
-  collectCategory = (store: Store): Array<Item> => {
-    return store.collectCategory()
-  }
-
-  renderList = (store: Store) => {
-    const data = this.collectCategory(store)
-
-    return (
-      <FlatList
-        data={data}
-        keyExtractor={this.keyExtractor}
-        renderItem={this.renderItem}
-      />
-    )
-  }
-
   render() {
+    const { categories } = this.props
     return (
       <SafeAreaView>
         <Content>
-          <Subscribe to={[Store]}>
-            {this.renderList}
-          </Subscribe>
+          <FlatList
+            data={categories}
+            keyExtractor={this.keyExtractor}
+            renderItem={this.renderItem}
+          />
         </Content>
       </SafeAreaView>
     )

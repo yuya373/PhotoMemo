@@ -15,18 +15,18 @@ import {
   Content,
   Container,
 } from "native-base"
-import { Subscribe } from 'unstated';
-import Store from "./../store"
+import { createTag } from "../actions/tagsAction";
 
 interface Props {
   navigation: NavigationScreenProp<any, any>,
+  createTag: typeof createTag,
 }
 
 interface State {
   inputValue: string,
 }
 
-export default class CreateTagModal extends React.Component<Props, State> {
+export class CreateTagScreen extends React.Component<Props, State> {
   state = {
     inputValue: "",
   }
@@ -36,35 +36,17 @@ export default class CreateTagModal extends React.Component<Props, State> {
       this.props.navigation.goBack
     )
   }
-  createTag = async (store: Store) => {
+  createTag = () => {
     const { inputValue } = this.state
     if (inputValue.length <= 0) return
-    const { navigation } = this.props
+    const {
+      navigation,
+      createTag,
+    } = this.props
 
     const level = navigation.getParam("level", "0")
-    await store.createTag({
-      label: inputValue,
-      level,
-    })
+    createTag(inputValue, level)
     navigation.goBack()
-  }
-
-  renderCreateButton = (store: Store) => {
-    const {
-      inputValue,
-    } = this.state
-
-    return (
-      <Button
-        disabled={inputValue.length <= 0}
-        transparent
-        onPress={() => this.createTag(store)}
-      >
-        <Text>
-          Create
-        </Text>
-      </Button >
-    )
   }
 
   handleChangeText = (inputValue: string) => {
@@ -74,31 +56,15 @@ export default class CreateTagModal extends React.Component<Props, State> {
     }))
   }
 
-  renderForm = (store: Store) => {
-    return (
-      <Form>
-        <Item
-          floatingLabel
-          last
-        >
-          <Label>
-            Name
-          </Label>
-          <Input
-            autoFocus
-            onChangeText={this.handleChangeText}
-            returnKeyType="done"
-            onSubmitEditing={() => this.createTag(store)}
-          />
-        </Item>
-      </Form>
-    )
-  }
   render() {
     const level = this.props.navigation.getParam("level", "0")
     const title = level === "0" ?
       "New Category" : level === "1" ?
         "New SubCategory" : "New Tag"
+    const {
+      inputValue,
+    } = this.state
+
 
     return (
       <Container>
@@ -119,15 +85,34 @@ export default class CreateTagModal extends React.Component<Props, State> {
             </Title>
           </Body>
           <Right>
-            <Subscribe to={[Store]}>
-              {this.renderCreateButton}
-            </Subscribe>
+            <Button
+              disabled={inputValue.length <= 0}
+              transparent
+              onPress={this.createTag}
+            >
+              <Text>
+                Create
+              </Text>
+            </Button >
           </Right>
         </Header>
         <Content>
-          <Subscribe to={[Store]}>
-            {this.renderForm}
-          </Subscribe>
+          <Form>
+            <Item
+              floatingLabel
+              last
+            >
+              <Label>
+                Name
+              </Label>
+              <Input
+                autoFocus
+                onChangeText={this.handleChangeText}
+                returnKeyType="done"
+                onSubmitEditing={this.createTag}
+              />
+            </Item>
+          </Form>
         </Content>
       </Container>
     )

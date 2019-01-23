@@ -1,41 +1,53 @@
 import React from "react"
 import { Tag } from "./../../models/Tag";
-import Picker, { Item as PickerItem } from "./../../components/Picker"
+import Picker from "./../../components/Picker"
+import {
+  Content,
+  Container,
+} from "native-base"
+import { Header } from "./Header";
 
 interface Props {
-  isOpen: boolean,
-  disabled: boolean,
   subCategories: Array<Tag>,
-  selected: Tag | undefined,
-  onOpen: () => void,
-  onClose: () => void,
-  onPressItem: (item: PickerItem) => Promise<boolean>,
+  selected: string,
+  onPressItem: (item: string) => void,
   onPressAddItem: (tagLevel: "1") => void,
+  goBack: () => void,
 }
 
-export default function SubCategory({
-  isOpen,
+export function SubCategory({
   subCategories,
   selected,
-  onOpen,
-  onClose,
   onPressItem,
   onPressAddItem,
+  goBack,
 }: Props) {
   const handlePressAddItem = () => {
     onPressAddItem("1")
   }
+  const handlePressItem = ({ label }: { label: string }) => {
+    const isSame = selected === label
+    onPressItem(label)
+
+    if (isSame) return
+    goBack()
+  }
 
   return (
-    <Picker
-      title="SubCategories"
-      isOpen={isOpen}
-      onClose={onClose}
-      onOpen={onOpen}
-      items={subCategories}
-      selected={selected}
-      onPressItem={onPressItem}
-      onPressAddItem={handlePressAddItem}
-    />
+    <Container>
+      <Header
+        title="SubCategories"
+        leftButtonLabel="Cancel"
+        onPressAddItem={handlePressAddItem}
+        onPressLeftButton={goBack}
+      />
+      <Content>
+        <Picker
+          items={subCategories}
+          selected={selected}
+          onPressItem={handlePressItem}
+        />
+      </Content>
+    </Container>
   )
 }

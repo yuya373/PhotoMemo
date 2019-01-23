@@ -92,8 +92,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
+    flexWrap: "wrap",
+    alignContent: "space-around",
+    paddingBottom: 0,
   },
   tag: {
-    marginRight: 10
+    marginRight: 10,
+    marginBottom: 10,
   },
 })

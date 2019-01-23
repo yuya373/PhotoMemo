@@ -6,165 +6,60 @@ import {
   Icon,
 } from 'native-base';
 import { NavigationScreenProp } from 'react-navigation';
-import { Subscribe } from 'unstated';
-import Store from '../store';
-import { Memo, hasTag } from '../models/Memo';
-import MemoCard from "./../components/MemoCard"
 import { FlatList } from "react-native"
-import Search from "./../components/Search"
-
-interface State {
-  displayCamera: boolean,
-  searchInputValue: string,
-  doSearch: boolean,
-}
+import { Tag } from '../models/Tag';
+import { SearchByTagContainer } from "./../container/SearchByTagContainer"
+import { MemoCardContainer } from '../container/MemoCardContainer';
 
 interface Props {
   navigation: NavigationScreenProp<any, any>,
-  store: Store,
+  memoIds: Array<string>,
+  categories: Array<Tag>,
+  addMemo: () => void,
 }
 
-class HomeScreen extends React.Component<Props, State> {
-  displayCamera = () => this.props.navigation.navigate("Camera")
+type Item = string
 
-  state = {
-    displayCamera: false,
-    searchInputValue: "",
-    doSearch: false,
+export class HomeScreen extends React.Component<Props, {}> {
+  static navigationOptions = {
+    header: null
   }
 
-  goEditMemo = (memo: Memo) => () =>
-    this.props.navigation.navigate("EditMemo", { id: memo.id })
-
-  goImage = (memo: Memo) => () =>
-    this.props.navigation.navigate("Image", {
-      id: memo.id,
-    })
-
-  getSubCategoryProps = (memo: Memo) => {
-    const { store } = this.props
-    const categories = store.collectCategory()
-    const category = categories.find((e) => {
-      return e.category.label === memo.category
-    })
-
-    return {
-      category: memo.category,
-      subCategories: category ?
-        Array.from(category.subCategories) :
-        [],
-    }
-  }
-
-  goSubCategories = (memo: Memo) => () => {
-    const { navigation } = this.props
-
-    navigation.navigate(
-      "SubCategory",
-      this.getSubCategoryProps(memo),
-    )
-  }
-
-  goMemos = (memo: Memo) => () => {
-    const { navigation } = this.props
-    const { category, subCategory } = memo
-    navigation.navigate("Memos", {
-      category,
-      subCategory,
-    })
-  }
-
-  renderMemo = ({ item }: { item: Memo }) => {
+  renderMemo = ({ item }: { item: Item }) => {
     return (
-      <MemoCard
-        memo={item}
-        onPressEdit={this.goEditMemo(item)}
-        onPressImage={this.goImage(item)}
-        onPressCategory={this.goSubCategories(item)}
-        onPressSubCategory={this.goMemos(item)}
+      <MemoCardContainer
+        id={item}
+        navigation={this.props.navigation}
       />
     )
   }
 
-  keyExtractor = (memo: Memo) => memo.uri
-
-  renderMemos = () => {
-    const { store } = this.props
-    const memos = []
-    const {
-      doSearch,
-      searchInputValue,
-    } = this.state
-    for (let memo of store.state.memos) {
-      if (!doSearch || hasTag(memo, searchInputValue)) {
-        memos.push(memo)
-      }
-    }
-
-    return (
-      <FlatList
-        data={memos}
-        renderItem={this.renderMemo}
-        keyExtractor={this.keyExtractor}
-      />
-    )
-  }
-
-  onSearchTextChange = (searchInputValue: string) => {
-    if (searchInputValue.length <= 0) {
-      this.onSearchClear()
-      return
-    }
-    this.setState({ searchInputValue })
-  }
-
-  onSearchSubmit = () => {
-    this.setState({ doSearch: true })
-  }
-
-  onSearchClear = () => {
-    this.setState({ searchInputValue: "", doSearch: false })
-  }
+  keyExtractor = (memo: Item) => memo
 
   render() {
+    const {
+      memoIds,
+      addMemo,
+    } = this.props
+
     return (
       <SafeAreaView>
         <Content>
-          <Search
-            inputValue={this.state.searchInputValue}
-            onChangeText={this.onSearchTextChange}
-            onSubmit={this.onSearchSubmit}
-            onClear={this.onSearchClear}
-            placeholder="Search by tag"
+          <SearchByTagContainer screen="home" />
+          <FlatList
+            data={memoIds}
+            renderItem={this.renderMemo}
+            keyExtractor={this.keyExtractor}
           />
-          {this.renderMemos()}
         </Content>
         <Fab
           direction="up"
           position="bottomRight"
-          onPress={this.displayCamera}
+          onPress={addMemo}
         >
           <Icon name="add" />
         </Fab>
       </SafeAreaView>
     );
   }
-}
-
-
-export default function ConnectedHomeScreen({ navigation }: { navigation: NavigationScreenProp<any, any> }) {
-  return (
-    <Subscribe to={[Store]}>
-      {(store: Store) => (
-        <HomeScreen
-          store={store}
-          navigation={navigation}
-        />
-      )}
-    </Subscribe>
-  )
-}
-
-ConnectedHomeScreen.navigationOptions = {
-  header: null
 }

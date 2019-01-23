@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationScreenProp } from "react-navigation";
 import {
   Content,
   Left,
@@ -10,30 +9,28 @@ import {
 } from "native-base"
 import SafeAreaView from "./../components/SaveAreaView"
 import { FlatList } from "react-native"
-import { Label } from '../models/Tag';
+
+type Item = string
 
 interface Props {
-  navigation: NavigationScreenProp<any, any>,
+  subCategories: Array<string>,
+  onPressItem: (subCategory: string) => void,
 }
 
-export default class SubCategoryScreen extends React.Component<Props> {
+export class SubCategoryScreen extends React.Component<Props> {
   static navigationOptions = {
     title: 'SubCategories',
   };
 
-  handlePressItem = (subCategory: Label) => () => {
-    const { navigation } = this.props
-    const category: Label | null =
-      navigation.getParam("category", null)
+  handlePressItem = (subCategory: Item) => () => {
+    const {
+      onPressItem
+    } = this.props
 
-    if (!category) return
-    navigation.navigate("Memos", {
-      category,
-      subCategory,
-    })
+    onPressItem(subCategory)
   }
-  keyExtractor = (item: Label) => item
-  renderItem = ({ item, index }: { item: Label, index: number }) => {
+  keyExtractor = (item: Item) => item
+  renderItem = ({ item, index }: { item: Item, index: number }) => {
     const isFirst = index === 0
 
     return (
@@ -57,11 +54,8 @@ export default class SubCategoryScreen extends React.Component<Props> {
 
   render() {
     const {
-      navigation,
+      subCategories,
     } = this.props
-
-    const subCategories: Array<Label> =
-      navigation.getParam("subCategories", [])
 
     return (
       <SafeAreaView>
