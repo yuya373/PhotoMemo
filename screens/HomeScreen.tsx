@@ -1,12 +1,11 @@
 import React from 'react';
 import SafeAreaView from './../components/SaveAreaView';
 import {
-  Content,
   Fab,
   Icon,
 } from 'native-base';
 import { NavigationScreenProp } from 'react-navigation';
-import { FlatList } from "react-native"
+import { FlatList, ScrollView } from "react-native"
 import { Tag } from '../models/Tag';
 import { SearchByTagContainer } from "./../container/SearchByTagContainer"
 import { MemoCardContainer } from '../container/MemoCardContainer';
@@ -37,6 +36,20 @@ export class HomeScreen extends React.Component<Props, {}> {
 
   keyExtractor = (memo: Item) => memo
 
+  contentRef: React.RefObject<ScrollView> = React.createRef()
+  scrollToTop = () => {
+    if (this.contentRef.current) {
+      this.contentRef.current.scrollTo({
+        x: 0,
+        y: 0,
+        animated: true,
+      })
+    }
+  }
+  onContentSizeChange = () => {
+    this.scrollToTop()
+  }
+
   render() {
     const {
       memoIds,
@@ -45,14 +58,17 @@ export class HomeScreen extends React.Component<Props, {}> {
 
     return (
       <SafeAreaView>
-        <Content>
+        <ScrollView
+          onContentSizeChange={this.onContentSizeChange}
+          ref={this.contentRef}
+        >
           <SearchByTagContainer screen="home" />
           <FlatList
             data={memoIds}
             renderItem={this.renderMemo}
             keyExtractor={this.keyExtractor}
           />
-        </Content>
+        </ScrollView>
         <Fab
           direction="up"
           position="bottomRight"
@@ -60,7 +76,7 @@ export class HomeScreen extends React.Component<Props, {}> {
         >
           <Icon name="add" />
         </Fab>
-      </SafeAreaView>
+      </SafeAreaView >
     );
   }
 }

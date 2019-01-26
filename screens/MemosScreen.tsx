@@ -1,10 +1,7 @@
 import React from 'react';
 import { NavigationScreenProp } from "react-navigation";
-import {
-  Content,
-} from "native-base"
 import SafeAreaView from "./../components/SaveAreaView"
-import { FlatList } from "react-native"
+import { FlatList, ScrollView } from "react-native"
 import { SearchByTagContainer } from "./../container/SearchByTagContainer"
 import { MemoCardContainer } from '../container/MemoCardContainer';
 
@@ -28,11 +25,27 @@ export class MemosScreen extends React.Component<Props> {
     )
   }
 
+  contentRef: React.RefObject<ScrollView> = React.createRef()
+  scrollToTop = () => {
+    if (this.contentRef.current) {
+      this.contentRef.current.scrollTo({
+        x: 0,
+        y: 0,
+        animated: true,
+      })
+    }
+  }
+  onContentSizeChange = () => {
+    this.scrollToTop()
+  }
+
   render() {
     const { memoIds } = this.props
     return (
       <SafeAreaView>
-        <Content
+        <ScrollView
+          ref={this.contentRef}
+          onContentSizeChange={this.onContentSizeChange}
         >
           <SearchByTagContainer screen="browse" />
           <FlatList
@@ -40,7 +53,7 @@ export class MemosScreen extends React.Component<Props> {
             keyExtractor={this.keyExtractor}
             renderItem={this.renderItem}
           />
-        </Content>
+        </ScrollView>
       </SafeAreaView>
     )
   }
