@@ -14,6 +14,7 @@ interface Props {
   onPressImage: () => void,
   onPressCategory: (category: string) => void,
   onPressSubCategory: (category: string, subCategory: string) => void,
+  onPressTag: (tag: string) => void,
 }
 
 export function MemoCard({
@@ -22,6 +23,7 @@ export function MemoCard({
   onPressImage,
   onPressCategory,
   onPressSubCategory,
+  onPressTag,
 }: Props) {
 
   const Category = onPressCategory ? (
@@ -67,6 +69,7 @@ export function MemoCard({
           small
           rounded
           style={styles.tag}
+          onPress={() => onPressTag(e)}
         >
           <Text>{e}</Text>
         </Button>

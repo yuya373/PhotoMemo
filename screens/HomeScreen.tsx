@@ -30,6 +30,7 @@ export class HomeScreen extends React.Component<Props, {}> {
       <MemoCardContainer
         id={item}
         navigation={this.props.navigation}
+        screen="home"
       />
     )
   }

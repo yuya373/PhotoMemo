@@ -23,6 +23,7 @@ export class MemosScreen extends React.Component<Props> {
       <MemoCardContainer
         id={item}
         navigation={this.props.navigation}
+        screen="browse"
       />
     )
   }

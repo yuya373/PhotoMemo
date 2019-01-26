@@ -7,6 +7,8 @@ import { NavigationScreenProp, NavigationState, NavigationActions } from "react-
 import { filterCategoryChange, filterSubCategoryChange } from "../actions/filterMemosAction";
 import { getImageMeta } from "../actions/imageScreenAction";
 import { initMemoForm } from "../actions/memoFormAction";
+import { TagsFilterScreen } from "../reducers/tagsFilterReducer";
+import { filterTagChange, filterByTag } from "../actions/tagsFilterAction";
 
 function mapStateToProps(state: RootState, { id }: { id: string }) {
   return {
@@ -16,12 +18,17 @@ function mapStateToProps(state: RootState, { id }: { id: string }) {
 
 function mapDispatchToProps(
   dispatch: ThunkDispatch<RootState, undefined, Actions>,
-  { navigation, id }: {
+  { navigation, id, screen }: {
     navigation: NavigationScreenProp<NavigationState>,
     id: string,
+    screen: TagsFilterScreen,
   },
 ) {
   return {
+    onPressTag: (tag: string) => {
+      dispatch(filterTagChange({ tag, screen }))
+      dispatch(filterByTag({ screen }))
+    },
     onPressEdit: async () => {
       await dispatch(initMemoForm(id))
       navigation.navigate("EditMemo")
