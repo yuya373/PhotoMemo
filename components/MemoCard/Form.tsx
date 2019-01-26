@@ -12,9 +12,10 @@ interface Props {
   category: string | undefined,
   subCategory: string | undefined,
   tags: Array<string> | undefined,
-  onPressCategory?: () => void | undefined,
-  onPressSubCategory?: () => void | undefined,
-  onPressTags?: () => void | undefined,
+  onPressCategory: () => void,
+  onPressSubCategory: () => void,
+  onPressTags: () => void,
+  onPressImage: () => void,
 }
 
 export default function FormMemoCard({
@@ -25,6 +26,7 @@ export default function FormMemoCard({
   onPressCategory,
   onPressSubCategory,
   onPressTags,
+  onPressImage,
 }: Props) {
 
   const Category = (
@@ -82,6 +84,7 @@ export default function FormMemoCard({
       Category={Category}
       SubCategory={SubCategory}
       Tags={Tags}
+      onPressImage={onPressImage}
     />
   )
 }

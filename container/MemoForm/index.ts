@@ -4,6 +4,7 @@ import { Actions } from "../../actions";
 import { NavigationScreenProp, NavigationState } from "react-navigation";
 import { connect } from "react-redux";
 import MemoForm from "../../components/MemoForm";
+import { getImageMeta } from "../../actions/imageScreenAction";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -15,14 +16,20 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(
-  _dispatch: ThunkDispatch<RootState, undefined, Actions>,
-  { navigation }: { navigation: NavigationScreenProp<NavigationState> }
+  dispatch: ThunkDispatch<RootState, undefined, Actions>,
+  { navigation }: {
+    navigation: NavigationScreenProp<NavigationState>,
+  }
 ) {
   return {
     onPressCategory: () => navigation.navigate("CategoryPicker"),
     onPressSubCategory: () =>
       navigation.navigate("SubCategoryPicker"),
     onPressTags: () => navigation.navigate("TagsPicker"),
+    onPressImage: async () => {
+      await dispatch(getImageMeta())
+      navigation.navigate("Image")
+    }
   }
 }
 

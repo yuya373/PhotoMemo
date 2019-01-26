@@ -1,7 +1,6 @@
 import { Action } from "redux";
-import { ThunkAction } from "redux-thunk";
 import { RootState } from "../reducers";
-import { Actions } from ".";
+import { ThunkResult } from ".";
 import { Image } from "react-native";
 import { updateMemo } from "./memosAction";
 import { Types } from "./../types"
@@ -16,54 +15,85 @@ interface ImageScreenGetSizeEndAction extends Action {
   error: boolean,
 }
 
-export function getImageMeta(memoId: string): ThunkAction<Promise<void>, RootState, undefined, Actions> {
+interface ImageMeta {
+  uri: string,
+  width: number | undefined,
+  height: number | undefined,
+}
+
+const getMetaById = (state: RootState, id: string): ImageMeta => {
+  const memo = state.memos.byId[id]
+  return {
+    uri: memo.uri,
+    width: memo.width,
+    height: memo.height,
+  }
+}
+
+const getMetaByForm = (state: RootState): ImageMeta => {
+  return state.memoForm
+}
+
+function getSizeEnd(
+  error: boolean,
+  payload: {
+    uri: string,
+    width: number,
+    height: number,
+  } | Error
+): ImageScreenGetSizeEndAction {
+  return {
+    type: Types.IMAGE_SCREEN_GET_SIZE_END,
+    error,
+    payload,
+  }
+}
+
+const getImageSize = (uri: string): Promise<{ width: number, height: number }> => new Promise((resolve, reject) => {
+  Image.getSize(
+    uri,
+    (width: number, height: number) => resolve({ width, height }),
+    (err) => reject(err)
+  )
+})
+
+export function getImageMeta(memoId?: string): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     dispatch({ type: Types.IMAGE_SCREEN_GET_SIZE_START })
     const state = getState()
-    const memo = state.memos.byId[memoId]
-    if (memo.width && memo.height) {
-      dispatch({
-        type: Types.IMAGE_SCREEN_GET_SIZE_END,
-        error: false,
-        payload: {
-          uri: memo.uri,
-          width: memo.width,
-          height: memo.height,
-        }
-      })
+    const {
+      uri,
+      width,
+      height,
+    } = memoId ? getMetaById(state, memoId) : getMetaByForm(state)
+
+    if (width && height) {
+      dispatch(getSizeEnd(false, {
+        uri,
+        width,
+        height,
+      }))
       return
-    }
-    return new Promise((resolve) => {
-      Image.getSize(
-        memo.uri,
-        (width: number, height: number) => {
-          dispatch({
-            type: Types.IMAGE_SCREEN_GET_SIZE_END,
-            error: false,
-            payload: {
-              uri: memo.uri,
-              width,
-              height,
-            }
-          })
+    } else {
+      try {
+        const { width, height } = await getImageSize(uri)
+        dispatch(getSizeEnd(false, {
+          uri,
+          width,
+          height,
+        }))
+        const memo = memoId && getState().memos.byId[memoId]
+        if (memo) {
           dispatch(updateMemo({
             ...memo,
             width,
             height,
           }))
-          resolve()
-        },
-        (error) => {
-          dispatch({
-            type: Types.IMAGE_SCREEN_GET_SIZE_END,
-            error: true,
-            payload: error,
-          })
-          resolve()
         }
-      )
-
-    })
+      } catch (err) {
+        dispatch(getSizeEnd(true, err))
+      }
+    }
   }
 }
 

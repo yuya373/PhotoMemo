@@ -12,6 +12,7 @@ interface Props {
   onPressCategory: () => void,
   onPressSubCategory: () => void,
   onPressTags: () => void,
+  onPressImage: () => void,
 }
 
 export default function MemoForm({
@@ -22,6 +23,7 @@ export default function MemoForm({
   onPressCategory,
   onPressSubCategory,
   onPressTags,
+  onPressImage,
 }: Props) {
   return (
     <Content>
@@ -33,6 +35,7 @@ export default function MemoForm({
         onPressCategory={onPressCategory}
         onPressSubCategory={onPressSubCategory}
         onPressTags={onPressTags}
+        onPressImage={onPressImage}
       />
     </Content >
   )
