@@ -23,6 +23,12 @@ function createMemo(state: MemosState, newMemo: Memo): MemosState {
   return state
 }
 
+function deleteMemo(state: MemosState, id: string): MemosState {
+  state.ids = state.ids.filter((e) => e !== id)
+  delete state.byId[id]
+  return state
+}
+
 export const initialMemosState = {
   byId: {},
   ids: [],
@@ -62,6 +68,8 @@ export function memosReducer(
       return updateMemo(state, action.payload.memo)
     case Types.CREATE_MEMO:
       return createMemo(state, action.payload.newMemo)
+    case Types.DELETE_MEMO:
+      return deleteMemo(state, action.payload.id)
     default:
       return state
   }

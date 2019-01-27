@@ -12,12 +12,14 @@ import {
   Text,
 } from "native-base"
 import { MemoFormContainer } from "../container/MemoForm";
+import { StyleSheet } from "react-native";
 
 interface Props {
   navigation: NavigationScreenProp<NavigationState>,
   isValid: boolean,
   save: () => void,
   goBack: () => void,
+  onPressDelete: () => void,
 }
 
 export function EditMemoScreen({
@@ -25,6 +27,7 @@ export function EditMemoScreen({
   navigation,
   save,
   goBack,
+  onPressDelete,
 }: Props) {
   return (
     <Container>
@@ -56,7 +59,23 @@ export function EditMemoScreen({
         <MemoFormContainer
           navigation={navigation}
         />
+        <Button
+          danger
+          block
+          onPress={onPressDelete}
+          style={styles.button}
+        >
+          <Text>Delete</Text>
+        </Button>
       </Content>
     </Container >
   )
 }
+
+const styles = StyleSheet.create({
+  button: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 5,
+  },
+})

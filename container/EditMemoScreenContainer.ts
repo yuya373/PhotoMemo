@@ -6,6 +6,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { Actions } from "../actions";
 import { NavigationScreenProp, NavigationState } from "react-navigation";
 import { saveMemoForm } from "../actions/memoFormAction";
+import { deleteMemo } from "../actions/memosAction";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -22,7 +23,13 @@ function mapDispatchToProps(
     save: async () => {
       await dispatch(saveMemoForm())
       navigation.goBack()
-    }
+    },
+    onPressDelete: async () => {
+      const deleted = await dispatch(deleteMemo())
+      if (!deleted) return
+
+      navigation.goBack()
+    },
   }
 }
 
