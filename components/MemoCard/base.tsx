@@ -72,6 +72,8 @@ const styles = StyleSheet.create({
   card: {
     marginTop: 10,
     marginBottom: 10,
+    marginLeft: 15,
+    marginRight: 15,
   },
   headerContainer: {
     flex: 1,
