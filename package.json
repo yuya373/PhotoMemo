@@ -32,9 +32,11 @@
     "@types/react-redux": "^7.0.0",
     "@types/redux": "^3.6.0",
     "@types/redux-thunk": "^2.1.0",
+    "@types/remote-redux-devtools": "^0.5.3",
     "@types/uuid": "^3.4.4",
     "babel-preset-expo": "^5.0.0",
     "jest-expo": "^32.0.0",
+    "remote-redux-devtools": "^0.5.16",
     "typescript": "^3.2.4"
   },
   "private": true

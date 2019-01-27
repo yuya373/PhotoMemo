@@ -8,6 +8,7 @@ import { rootReducer, RootState } from './reducers';
 import { Provider } from "react-redux"
 import thunk from 'redux-thunk';
 import { loadInitialState } from './actions/initialState';
+import { composeWithDevTools } from 'remote-redux-devtools';
 
 interface State {
   isLoadingComplete: boolean,
@@ -17,9 +18,12 @@ interface Props {
   skipLoadingScreen: boolean,
 }
 
+const compose = composeWithDevTools({ realtime: __DEV__ })
 const store = createStore(
   rootReducer,
-  applyMiddleware(thunk)
+  compose(
+    applyMiddleware(thunk),
+  ),
 )
 
 export default class App extends React.Component<Props, State> {
