@@ -33,6 +33,14 @@ function filterSubCategoryChange(
   return state
 }
 
+function deleteMemo(state: MemosFilterState, id: string) {
+  state.memoIdsByCategory =
+    state.memoIdsByCategory.filter((e) => e !== id)
+  state.memoIdsBySubCategory =
+    state.memoIdsBySubCategory.filter((e) => e !== id)
+  return state
+}
+
 export function memosFilterReducer(
   state: MemosFilterState,
   action: Actions,
@@ -42,6 +50,8 @@ export function memosFilterReducer(
       return filterSubCategoryChange(state, action.payload)
     case Types.FILTER_CATEGORY_CHANGE:
       return filterCategoryChange(state, action.payload)
+    case Types.DELETE_MEMO:
+      return deleteMemo(state, action.payload.id)
     default:
       return state
   }
